@@ -17,10 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['letra'])) {
     $letra = strtolower($_POST['letra']);
 
     // Verificar si la letra ya se ha usado
-    if (in_array($letra, $_SESSION['letras_usadas'])) {
-        echo "Ya has usado la letra '$letra'. Intenta con otra.<br>";
-    } else {
-        // Añadir la letra a las usadas
+    if (!in_array($letra, $_SESSION['letras_usadas'])) {
         $_SESSION['letras_usadas'][] = $letra;
 
         // Verificar si la letra está en la palabra secreta
@@ -37,15 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['letra'])) {
 }
 
 // Comprobar si se ha ganado o perdido
-if ($_SESSION['letras_acertadas'] == $_SESSION['palabra']) {
-    echo "¡Enhorabuena! Has ganado :) La palabra era: " . $_SESSION['palabra'] . "<br>";
-    session_destroy();
-    echo '<a href="">Jugar de nuevo</a>';
+if ($_SESSION['letras_acertadas'] === $_SESSION['palabra']) {
+    header("Location: ganar.php");
     exit();
 } elseif ($_SESSION['vidas'] <= 0) {
-    echo "Lo siento, has perdido :( La palabra era: " . $_SESSION['palabra'] . "<br>";
-    session_destroy();
-    echo '<a href="">Jugar de nuevo</a>';
+    header("Location: perder.php");
     exit();
 }
 ?>
@@ -56,6 +49,7 @@ if ($_SESSION['letras_acertadas'] == $_SESSION['palabra']) {
 <head>
     <meta charset="UTF-8">
     <title>Ahorcado</title>
+    <link rel="stylesheet" href="estilos.css">
 </head>
 
 <body>
